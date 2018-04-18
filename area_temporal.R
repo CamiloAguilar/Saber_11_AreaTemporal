@@ -142,7 +142,7 @@ aux_2015z <- saber2015_Aquia %>%
 
 #aux_2015 <- merge(aux_2015z, aux_2015a, by="Cod_colegio")
 aux_2015 <- merge(aux_2015z, aux_2015b, by="Cod_colegio")
-saveRDS(aux_2015, "./RDS/aux_2015")
+saveRDS(aux_2015, "./RDS/aux_2015.rds")
 
 Colegios_2015 <- merge(Colegios_2015, aux_2015, by="Cod_colegio")
 saveRDS(Colegios_2015, "./RDS/Colegios_2015.rds")
@@ -180,7 +180,7 @@ aux_2016z <- saber2016_Aquia %>%
 
 #aux_2016 <- merge(aux_2016z, aux_2016a, by="Cod_colegio")
 aux_2016 <- merge(aux_2016z, aux_2016b, by="Cod_colegio")
-saveRDS(aux_2016, "./RDS/aux_2016")
+saveRDS(aux_2016, "./RDS/aux_2016.rds")
 
 Colegios_2016 <- merge(Colegios_2016, aux_2016, by="Cod_colegio")
 saveRDS(Colegios_2016, "./RDS/Colegios_2016.rds")
@@ -212,7 +212,7 @@ aux_2017z <- saber2017_Aquia %>%
 
 
 aux_2017 <- merge(aux_2017z, aux_2017b, by="Cod_colegio")
-saveRDS(aux_2017, "./RDS/aux_2017")
+saveRDS(aux_2017, "./RDS/aux_2017.rds")
 
 Colegios_2017 <- merge(Colegios_2017, aux_2017, by="Cod_colegio")
 names(Colegios_2017)

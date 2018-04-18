@@ -145,7 +145,7 @@ aux_2015 <- merge(aux_2015z, aux_2015b, by="Cod_colegio")
 saveRDS(aux_2015, "./RDS/aux_2015")
 
 Colegios_2015 <- merge(Colegios_2015, aux_2015, by="Cod_colegio")
-saveRDS(Colegios_2015, "./RDS/Colegios_2015")
+saveRDS(Colegios_2015, "./RDS/Colegios_2015.rds")
 
 #********
 # 2016
@@ -183,7 +183,7 @@ aux_2016 <- merge(aux_2016z, aux_2016b, by="Cod_colegio")
 saveRDS(aux_2016, "./RDS/aux_2016")
 
 Colegios_2016 <- merge(Colegios_2016, aux_2016, by="Cod_colegio")
-saveRDS(Colegios_2016, "./RDS/Colegios_2016")
+saveRDS(Colegios_2016, "./RDS/Colegios_2016.rds")
 
 
 #********
@@ -216,6 +216,6 @@ saveRDS(aux_2017, "./RDS/aux_2017")
 
 Colegios_2017 <- merge(Colegios_2017, aux_2017, by="Cod_colegio")
 names(Colegios_2017)
-saveRDS(Colegios_2017, "./RDS/Colegios_2017")
+saveRDS(Colegios_2017, "./RDS/Colegios_2017.rds")
 
 

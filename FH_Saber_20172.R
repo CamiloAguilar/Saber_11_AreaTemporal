@@ -57,6 +57,8 @@ for (i in 3:ncol(InfoAux)) {
      InfoAux[,i] <- p; rm(p)
 }
 
+saveRDS(InfoAux, "./RDS/InfoAux.rds")
+
 #***************
 ## 2017 ####
 #***************

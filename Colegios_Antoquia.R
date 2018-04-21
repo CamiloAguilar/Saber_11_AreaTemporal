@@ -12,6 +12,9 @@ saber2017 <- read_delim("./data/SB11-201702.txt", delim = "|")
 
 ## Datos Antioquia
 saber2015_Aquia <- saber2015 %>% filter(ESTU_RESIDE_DEPTO=="ANTIOQUIA")
+saber2015_Aquia <- saber2015_Aquia %>%
+                   dplyr::filter(!(ESTU_CONSECUTIVO %in% c("SABER1120152366555")))
+
 saber2016_Aquia <- saber2016 %>% filter(ESTU_RESIDE_DEPTO=="ANTIOQUIA")
 saber2017_Aquia <- saber2017 %>% filter(ESTU_DEPTO_RESIDE=="ANTIOQUIA")
 saber2017_Aquia$ESTU_FECHANACIMIENTO <- as.Date.character(saber2017_Aquia$ESTU_FECHANACIMIENTO, format="%d/%m/%Y") 
@@ -66,7 +69,7 @@ saber2017_Aquia$COLE_AREA_UBICACION<-ifelse(saber2017_Aquia$COLE_AREA_UBICACION=
 rm(saber2017, saber2016, saber2015); gc()
 
 saveRDS(saber2015_Aquia, "./RDS/saber2015_Aquia.rds")
-saveRDS(saber2015_Aquia, "./RDS/saber2016_Aquia.rds")
+saveRDS(saber2016_Aquia, "./RDS/saber2016_Aquia.rds")
 saveRDS(saber2017_Aquia, "./RDS/saber2017_Aquia.rds")
 
 #*******************************************************************

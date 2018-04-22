@@ -5,18 +5,17 @@ rm(list = ls())
 library(dplyr); library(readr); library(reshape2)
 options(scipen=999)
 
+## Info Aux
+infoAux <- readRDS("./RDS/InfoAux.rds")
 
 saber2015 <- read_delim("./data/SB11-201502.txt", delim = "|")
 saber2016 <- read_delim("./data/SB11-201602.txt", delim = "|")
 saber2017 <- read_delim("./data/SB11-201702.txt", delim = "|")
 
 ## Datos Antioquia
-saber2015_Aquia <- saber2015 %>% filter(ESTU_RESIDE_DEPTO=="ANTIOQUIA")
-saber2015_Aquia <- saber2015_Aquia %>%
-                   dplyr::filter(!(ESTU_CONSECUTIVO %in% c("SABER1120152366555")))
-
-saber2016_Aquia <- saber2016 %>% filter(ESTU_RESIDE_DEPTO=="ANTIOQUIA")
-saber2017_Aquia <- saber2017 %>% filter(ESTU_DEPTO_RESIDE=="ANTIOQUIA")
+saber2015_Aquia <- saber2015 %>% filter(COLE_COD_MCPIO_UBICACION %in% infoAux$Cod_mcipio)
+saber2016_Aquia <- saber2016 %>% filter(COLE_COD_MCPIO_UBICACION %in% infoAux$Cod_mcipio)
+saber2017_Aquia <- saber2017 %>% filter(COLE_COD_MCPIO_UBICACION %in% infoAux$Cod_mcipio)
 saber2017_Aquia$ESTU_FECHANACIMIENTO <- as.Date.character(saber2017_Aquia$ESTU_FECHANACIMIENTO, format="%d/%m/%Y") 
 FExamen <- as.Date.character("2017-10-31")
 saber2017_Aquia$ESTU_EDAD <- floor((FExamen - saber2017_Aquia$ESTU_FECHANACIMIENTO)/365.25)

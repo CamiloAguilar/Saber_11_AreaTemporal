@@ -1,0 +1,233 @@
+---
+title: "Estimación Puntaje Total sobre pruebas Saber 11 en Antioquia - Colombia para 2015, 2016 y 2017"
+output: html_document
+---
+
+##### Realizado por:
+
+- **Nestor Jardany Serrano Rojas**, [GitHub](https://github.com/jardanys/SmallAreaEstimation_SABER11) 
+- **Camilo Alejandro Aguilar Laverde**, [GitHub](https://github.com/CamiloAguilar/SmallAreaEstimation_SABER11)
+- **Alvaro Enrique Villaba Mendez**, [GitHub](https://github.com/jardanys/SmallAreaEstimation_SABER11) 
+
+<br/>
+
+<div class=text-justify>
+Todo el contenido (datos, scripts, resultados etc) de esta presentación puede detallarse en el repositorio disponible en el siguiente [enlace](https://github.com/jardanys/SmallAreaEstimation_SABER11). Los datos utilizados están disponibles en formato RDS.
+
+</div>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+info.date<-format(Sys.time(), "%Y-%m")
+fileConn<-file("footer2.html")
+msj<-paste("<br/><p>", info.date, "Universidad Santo Tomas</p>")
+writeLines(c(msj,"<p>Copyright &copy; All rights reserved.</p>"),fileConn)
+close(fileConn)
+```
+
+```{r libraries, include=FALSE}
+library(survey)
+library(sae)
+library(TeachingSampling)
+library(dplyr)
+library(kableExtra)
+library(knitr)
+library(GGally)
+library(survey)
+library(TeachingSampling)
+library(dplyr)
+library(readxl)
+library(ggplot2)
+options(scipen = 999)
+options(survey.lonely.psu="adjust")
+```
+
+<br/>
+
+## **Introducción**
+
+<div class=text-justify>
+En el siguiente estudio de caso se utilizan técnicas estadísticas de SAE (Small Estimation Area) temporal para el Puntaje Global de los años 2015, 2016 y 2017. 
+
+El documento tiene como objetivo lograr estimaciones los más acertadas posible, de los resultados particulares sobre la prueba para **Puntaje Global** sobre los municipios, **(dominio)** de interés. A partir de la aplicación de diferentes métodos de estimación por muestreo de áreas pequeñas 'SAE'. Se define la población de estudio, pruebas en el departamento de Antioquia para los periodos de 2015, 2016 y 2017. 
+
+Primero realizó una muestra en dos etapas para los resultados de la prueba saber en el departamento de Antioquia. Estratificado-MAS para Colegios y MAS para estudiantes. Segundo se realizan estimaciones directas del promedio y total del **Puntaje Global** con el cve del dominio de interés. Tercero con la información auxiliar se propone un modelo adecuado para ajustar las estimaciones directas. Cuarto se desarrolla un modelo Fay.Harriot para estimar los dominios observados de muestra y lo no observados. Quinto se realiza un modelo de areas espacio temporal para los años 2015, 2016 y 2017. Por último se realiza una comparación en terminos del cve del modelo directo, FH y el modelo espacio temporal.
+
+</div>
+
+<br/>
+
+
+## **Contexto:** Puntaje Global pruebas Saber 11 - Departamento Antioquia Colombia.
+
+<div class=text-justify>
+El examen de Estado de la educación media, Icfes Saber 11°, surgió en 1968 con el propósito de apoyar a las instituciones de educación superior en sus procesos de selección y admisión de estudiantes y en la década de los ochenta llegó a evaluar a todos los estudiantes de undécimo grado. Se realiza en todo el territorio Colombiano, en este estudio se muestra para el departamento de Antioquia. Dicha prueba es diseñada por el Instituto Colombiano para la Evaluación de la Educación, conocido por las siglas ICFES (de Instituto Colombiano para el Fomento de la Educación Superior), el cual comprueba el grado de desarrollo de las competencias de los estudiantes que están por finalizar el grado undécimo de la Educación Media. Consta de las siguientes cinco pruebas:
+</div>
+
+* Lectura crítica
+* Matemáticas
+* Sociales y ciudadanas
+* Ciencias naturales
+* Inglés
+* El puntaje global es la suma de los resultados anteriores
+
+Los objetivos de este examen se resumen en: 
+
+ * Seleccionar estudiantes para la educación superior.
+ * Monitorear la calidad de la formación que ofrecen los establecimientos de educación media.
+ * Producir información para la estimación del valor agregado de la educación superior.
+
+<div class=text-justify>
+El examen se ha centrado en la evaluación de competencias entendidas como un saber hacer en contexto, lo cual implica que se movilicen conocimientos y habilidades ante distintas situaciones de evaluación. Aquellas se definen en correspondencia con los Estándares Básicos de Competencias del Ministerio de Educación Nacional y los requerimientos de formación en la Educación Superior.
+</div>
+
+Este examen proporciona resultados e información a distintos niveles:
+
+ * A los estudiantes les ofrece elementos para su autoevaluación.
+ * A las instituciones de educación superior les brinda criterios para sus procesos de admisión.
+ * A los establecimientos educativos les proporciona información para los procesos de autoevaluación y orientación de sus prácticas pedagógicas.
+ * A las autoridades educativas les brinda información confiable para construir indicadores de calidad.
+
+<br/>
+
+### **Descripción de la información utilizada e información auxiliar**
+<br/>
+
+#### **Información Objetivo**
+<div class=text-justify>
+El ICFES tiene disponible acceso a los resultados de la pruebas a través de su sistema [FTP](http://www.icfes.gov.co/itemlist/category/333-acceso-a-bases-de-datos). Aquí se describe el contenido de las bases de datos, los documentos de apoyo y cómo consultarlos, los análisis que se pueden hacer e información. **Tener en cuenta al momento de utilizar estos en investigaciones**.
+</div>
+
+#### **Información Auxiliar**
+<div class=text-justify>
+La información auxiliar se obtiene de la página wed [Datos Abiertos](https://www.datos.gov.co/Educaci-n/ESTADISTICAS-EN-EDUCACION-BASICA-POR-MUNICIPIO/nudc-7mev/data) Contiene información estadística de los niveles preescolar, básica y media relacionada con indicadores sectoriales por Municipio sin atípicos. Se utiliza la información de coberturas de educación, tasas de aprobación, reprobación, tasas de deserción, tamaños de grupos escolares. El objetivo es utilizar esta información para obtener mejores estimaciones.
+
+En el script del siguiente [enlace]() se encuentra el desarrollo de preparación, exploración, estandarización y transformación de la información auxiliar. 
+</div>
+
+En general, los datos disponibles están descritos bajo las siguientes variables:
+
+```{r InfoAux, echo=FALSE}
+InfoAux <- readRDS("./rds/InfoAux.RDS")
+InfoAux <- as.data.frame(InfoAux)
+names(InfoAux)
+```
+<br/>
+
+## **1. Definición de la muestra**
+
+<div class=text-justify>
+La población cuenta con los resultados para 73,837 estudiantes para 2015; 76,160 estudiantes para 2016 y 73,193 estudiantes para 2017 de los 125 municipios y diferentes colegios del departamento de Antioquia, sobre la cual se ha definido un diseño muestral complejo de 2 etapas teniendo en cuenta que se desea conocer el puntaje global obtenido por lo estudiantes de grado 11 en la prueba saber.
+
+Mencionado lo anterior se plateó una Primera Etapa con el Marco de muestreo de los colegios de Antioquia donde se realizó un diseño seleccionando una muestra estratificada-MAS. Es decir, para cada unidad primaria de muestreo seleccionada de tamaño $N_i$ se seleccionó una muestra de elementos de tamaño $n_i$. La estatificación se construyó con la función _strata.LH_ que permite  determinar los límites del estrato óptimo y los tamaños de muestra a partir del método  Lavallee-Hidiroglou.
+
+Para la Segunda Etapa se realizó un MAS por estudiantes con el fin de seleccionar los Colegios por medio de un Muestreo Aleatorio Simple sin reemplazamiento. 
+
+El desarrollo total de la muestra puede detallarse en el script [Diseño_Muestral_EC1.R](https://github.com/CamiloAguilar/SmallAreaEstimation_SABER11/blob/master/Diseno_Muestral_EC1.R) disponible en el repositorio web.
+
+Se obtiene una muestra de 4,768 estudiantes por año.
+
+<br/>
+
+## **2. Estimación global del promedio de puntaje global**
+
+<div class=text-justify>
+Se realiza una estimación global, del promedio y por dominio **(Municipios)** del puntaje obtenido para la prueba. __Estimador Directo__ Se realiza estimación Horvitz Thompson. 
+</div>
+
+- La estimación del total tiene un cve de 5.11%, indice de una estimación aceptable. 
+
+```{r dir_total, echo=FALSE}
+directoPG <- readRDS("./rds/EstDirectoTotal_PG.rds")
+kable(directoPG, "html") %>%
+  kable_styling("striped", full_width = F, position = "center")
+```
+
+- La estimación de la media tiene un cve de 1.72%, indice de una buena estimación. 
+
+```{r dir_mean, echo=FALSE}
+directoMeanPG <- readRDS("./rds/EstDirectomean_PG.rds")
+kable(directoMeanPG, "html") %>%
+  kable_styling("striped", full_width = F, position = "center")
+```
+
+- La estimación de la media por dominio, en ningún municipio pasa de 5%. 
+
+```{r dir_dom, echo=FALSE}
+directoDomMeanPG <- readRDS("./rds/EstDirectoDomMean_PG.rds")
+kable(directoDomMeanPG, "html") %>%
+  kable_styling("striped", full_width = F, position = "center") %>%
+  scroll_box(width = "850px", height = "300px")
+```
+
+<br/>
+
+## **3. Modelo Variables Auxiliares** 
+
+<div class=text-justify>
+Con las variables auxiliares (Se analizaron 37 variables) del total de municipios del departamento de Antioquia descritos anteriormente, se realizó un modelo vía *stepwise* para ajustar las estimaciones directas. Se obtiene el modelo reducido con las sigueintes variables más significativas para utilizar como información auxiliar:
+</div>
+
+- Población entre 5 y 16 años.
+- Tasa de matricula de estudiantes entre 5 y 16 años.
+- Número de sedes en el municipio con acceso a internet.
+- Tasa de reprobación media por municipio.
+- Tasa de repitencia media por municipio.
+
+A mayor tasa de matricula, sedes con internet en el municipio, con menor población de estudiantes entre 5 y 16 años y menor tasa de reprobación el puntaje global aumenta. Esta información se utiliza para todos los periodos del análisis. Los resultados se muestran a continuación.
+
+```{r model, echo=TRUE}
+modelo_reducido <- readRDS("./rds/modelo_reducido.rds")
+summary(modelo_reducido)
+```
+
+<br/>
+
+## **4. Estimador Fay-Harriot** 
+
+<div class=text-justify>
+La estimación de FH se realiza para los 28 municipios observados en la muestra descrita y para los 97 municipios restantes utilizando la información auxiliar descrita anteriormente.
+</div>
+
+- A continuación se muestra la comparación de los estimadores directos vs estimador FH
+
+```{r estimation_FH_direct, echo=FALSE}
+Resultados_sd <- readRDS("./rds/resultados_sd.rds")
+plot(Resultados_sd$Y_dir, type = "n", ylab = "Estimate", ylim = c(200, 400),
+     xlab = "area (sorted by decreasing sample size)", cex.axis = 1.5,
+     cex.lab = 1.5, main="Estimation Direct vs FH")
+points(Resultados_sd$Y_dir, type = "b", col = 1, lwd = 2, pch = 1, lty = 1)
+points(Resultados_sd$Y_FH, type = "b", col = 4, lwd = 2, pch = 4, lty = 2)
+legend("top", legend = c("Direct", "EBLUP FH"), ncol = 2, col = c(1, 4), lwd = 2,
+       pch = c(1, 4), lty = c(1, 2), cex = 1.3)
+```
+
+- A continuación se muestra la comparación de los cve directos vs estimador FH
+
+```{r cve_FH_direct, echo=FALSE}
+Resultados_sd <- readRDS("./rds/resultados_sd.rds")
+plot(Resultados_sd$cve_dir, type = "n", ylab = "CV", ylim = c(0, 10),
+     xlab = "area (sorted by decreasing sample size)", cex.axis = 1.5,
+     cex.lab = 1.5)
+points(Resultados_sd$cve_dir, type = "b", col = 1, lwd = 2, pch = 1, lty = 1)
+points(Resultados_sd$cve_FH, type = "b", col = 4, lwd = 2, pch = 4, lty = 2)
+legend("top", legend = c("Direct", "EBLUP FH"), ncol = 2, col = c(1, 4), lwd = 2,
+       pch = c(1, 4), lty = c(1, 2), cex = 1.3)
+```
+
+- Las estimaciones de municipios no observados y observados se muestran en la siguiente tabla:
+
+```{r FH_table, echo=FALSE}
+ResultadosFinales <- readRDS("./rds/ResultadosFinales.rds")
+kable(ResultadosFinales, "html") %>%
+  kable_styling("striped", full_width = F, position = "center") %>%
+  scroll_box(width = "850px", height = "300px")
+```
+<br/>
+
+- Los cve de FH para los municipios No observados son mayores a 5% y considerablemente mayores a la de los municipios observados. Como se observa en la siguiente gráfica. 
+
+```{r qplot, echo=FALSE}
+qplot( x=Tipologia_Dominio , y= cve_FH , data=ResultadosFinales , geom=c("boxplot","jitter") , fill=Tipologia_Dominio)
+```
+
